@@ -19,6 +19,7 @@ NTuple
 length(@nospecialize t::Tuple) = nfields(t)
 firstindex(@nospecialize t::Tuple) = 1
 lastindex(@nospecialize t::Tuple) = length(t)
+is_one_indexed(@nospecialize t::Tuple) = true
 size(@nospecialize(t::Tuple), d) = (d == 1) ? length(t) : throw(ArgumentError("invalid tuple dimension $d"))
 @eval getindex(t::Tuple, i::Int) = getfield(t, i, $(Expr(:boundscheck)))
 @eval getindex(t::Tuple, i::Real) = getfield(t, convert(Int, i), $(Expr(:boundscheck)))

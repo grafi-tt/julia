@@ -11,6 +11,7 @@ import Base: length, size, axes, IndexStyle, getindex, setindex!, parent, vec, c
 struct Adjoint{T,S} <: AbstractMatrix{T}
     parent::S
     function Adjoint{T,S}(A::S) where {T,S}
+        @assert is_one_indexed(A)
         checkeltype_adjoint(T, eltype(A))
         new(A)
     end
@@ -19,6 +20,7 @@ struct Transpose{T,S} <: AbstractMatrix{T}
     parent::S
     function Transpose{T,S}(A::S) where {T,S}
         checkeltype_transpose(T, eltype(A))
+        @assert is_one_indexed(A)
         new(A)
     end
 end
@@ -144,8 +146,8 @@ similar(A::AdjOrTransAbsVec) = wrapperop(A)(similar(A.parent))
 similar(A::AdjOrTransAbsVec, ::Type{T}) where {T} = wrapperop(A)(similar(A.parent, Base.promote_op(wrapperop(A), T)))
 # for matrices, the semantics of the wrapped and unwrapped types are generally the same
 # and as you are allocating with similar anyway, you might as well get something unwrapped
-similar(A::AdjOrTrans) = similar(A.parent, eltype(A), size(A))
-similar(A::AdjOrTrans, ::Type{T}) where {T} = similar(A.parent, T, size(A))
+similar(A::AdjOrTrans) = similar(A.parent, eltype(A), axes(A))
+similar(A::AdjOrTrans, ::Type{T}) where {T} = similar(A.parent, T, axes(A))
 similar(A::AdjOrTrans, ::Type{T}, dims::Dims{N}) where {T,N} = similar(A.parent, T, dims)
 
 # sundry basic definitions
@@ -197,6 +199,7 @@ broadcast(f, tvs::Union{Number,TransposeAbsVec}...) = transpose(broadcast((xs...
 *(u::AdjointAbsVec, v::AbstractVector) = dot(u.parent, v)
 *(u::TransposeAbsVec{T}, v::AbstractVector{T}) where {T<:Real} = dot(u.parent, v)
 function *(u::TransposeAbsVec, v::AbstractVector)
+    @assert is_one_indexed(u, v)
     @boundscheck length(u) == length(v) || throw(DimensionMismatch())
     return sum(@inbounds(u[k]*v[k]) for k in 1:length(u))
 end

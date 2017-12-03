@@ -346,6 +346,7 @@ function (\)(F::QRSparse{T}, B::VecOrMat{Complex{T}}) where T<:LinearAlgebra.Bla
 # |z2|z4|      ->       |y1|y2|y3|y4|     ->      |x2|y2|     ->    |x2|y2|x4|y4|
 #                                                 |x3|y3|
 #                                                 |x4|y4|
+    @assert is_one_indexed(F, B)
     c2r = reshape(copy(transpose(reinterpret(T, reshape(B, (1, length(B)))))), size(B, 1), 2*size(B, 2))
     x = F\c2r
 

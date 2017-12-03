@@ -1040,6 +1040,7 @@ Base.copyto!(dest::AbstractArray{T,2}, D::Dense{T}) where {T<:VTypes} = _copy!(d
 Base.copyto!(dest::AbstractArray, D::Dense) = _copy!(dest, D)
 
 function _copy!(dest::AbstractArray, D::Dense)
+    @assert is_one_indexed(dest)
     s = unsafe_load(pointer(D))
     n = s.nrow*s.ncol
     n <= length(dest) || throw(BoundsError(dest, n))

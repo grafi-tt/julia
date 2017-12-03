@@ -230,6 +230,7 @@ function serialize(s::AbstractSerializer, x::Symbol)
 end
 
 function serialize_array_data(s::IO, a)
+    @assert is_one_indexed(a)
     isempty(a) && return 0
     if eltype(a) === Bool
         last = a[1]

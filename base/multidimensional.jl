@@ -647,7 +647,10 @@ _iterable(X::AbstractArray, I...) = X
     end
 end
 
-diff(a::AbstractVector) = [ a[i+1] - a[i] for i=1:length(a)-1 ]
+function diff(a::AbstractVector)
+    @assert is_one_indexed(a)
+    [ a[i+1] - a[i] for i=1:length(a)-1 ]
+end
 
 """
     diff(A::AbstractVector)
@@ -1455,6 +1458,7 @@ function _extrema_dims(A::AbstractArray, dims)
 end
 
 @noinline function extrema!(B, A)
+    @assert is_one_indexed(B, A)
     sA = size(A)
     sB = size(B)
     for I in CartesianIndices(sB)

@@ -225,6 +225,7 @@ function searchsorted(v::AbstractVector, x, ilo::Int, ihi::Int, o::Ordering)
 end
 
 function searchsortedlast(a::AbstractRange{<:Real}, x::Real, o::DirectOrdering)
+    is_one_indexed(a) || throw(ArgumentError("range must be indexed starting with 1"))
     if step(a) == 0
         lt(o, x, first(a)) ? 0 : length(a)
     else
@@ -234,6 +235,7 @@ function searchsortedlast(a::AbstractRange{<:Real}, x::Real, o::DirectOrdering)
 end
 
 function searchsortedfirst(a::AbstractRange{<:Real}, x::Real, o::DirectOrdering)
+    is_one_indexed(a) || throw(ArgumentError("range must be indexed starting with 1"))
     if step(a) == 0
         lt(o, first(a), x) ? length(a) + 1 : 1
     else
@@ -243,6 +245,7 @@ function searchsortedfirst(a::AbstractRange{<:Real}, x::Real, o::DirectOrdering)
 end
 
 function searchsortedlast(a::AbstractRange{<:Integer}, x::Real, o::DirectOrdering)
+    is_one_indexed(a) || throw(ArgumentError("range must be indexed starting with 1"))
     if step(a) == 0
         lt(o, x, first(a)) ? 0 : length(a)
     else
@@ -251,6 +254,7 @@ function searchsortedlast(a::AbstractRange{<:Integer}, x::Real, o::DirectOrderin
 end
 
 function searchsortedfirst(a::AbstractRange{<:Integer}, x::Real, o::DirectOrdering)
+    is_one_indexed(a) || throw(ArgumentError("range must be indexed starting with 1"))
     if step(a) == 0
         lt(o, first(a), x) ? length(a)+1 : 1
     else
@@ -259,6 +263,7 @@ function searchsortedfirst(a::AbstractRange{<:Integer}, x::Real, o::DirectOrderi
 end
 
 function searchsortedfirst(a::AbstractRange{<:Integer}, x::Unsigned, o::DirectOrdering)
+    is_one_indexed(a) || throw(ArgumentError("range must be indexed starting with 1"))
     if lt(o, first(a), x)
         if step(a) == 0
             length(a) + 1
@@ -271,6 +276,7 @@ function searchsortedfirst(a::AbstractRange{<:Integer}, x::Unsigned, o::DirectOr
 end
 
 function searchsortedlast(a::AbstractRange{<:Integer}, x::Unsigned, o::DirectOrdering)
+    is_one_indexed(a) || throw(ArgumentError("range must be indexed starting with 1"))
     if lt(o, x, first(a))
         0
     elseif step(a) == 0

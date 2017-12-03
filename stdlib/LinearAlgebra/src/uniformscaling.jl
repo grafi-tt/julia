@@ -30,6 +30,8 @@ struct UniformScaling{T<:Number}
     λ::T
 end
 
+Base.is_one_indexed(::UniformScaling) = true
+
 """
     I
 
@@ -172,6 +174,7 @@ Broadcast.broadcasted(::typeof(/), J::UniformScaling,x::Number) = UniformScaling
 ## equality comparison with UniformScaling
 ==(J::UniformScaling, A::AbstractMatrix) = A == J
 function ==(A::AbstractMatrix, J::UniformScaling)
+    @assert is_one_indexed(A)
     size(A, 1) == size(A, 2) || return false
     iszero(J.λ) && return iszero(A)
     isone(J.λ) && return isone(A)
@@ -204,6 +207,7 @@ end
 isapprox(A::AbstractMatrix, J::UniformScaling; kwargs...) = isapprox(J, A; kwargs...)
 
 function copyto!(A::AbstractMatrix, J::UniformScaling)
+    @assert is_one_indexed(A)
     size(A,1)==size(A,2) || throw(DimensionMismatch("a UniformScaling can only be copied to a square matrix"))
     fill!(A, 0)
     λ = J.λ
@@ -240,6 +244,7 @@ for (f,dim,name) in ((:hcat,1,"rows"), (:vcat,2,"cols"))
             n = 0
             for a in A
                 if !isa(a, UniformScaling)
+                    @assert is_one_indexed(a)
                     na = size(a,$dim)
                     n > 0 && n != na &&
                         throw(DimensionMismatch(string("number of ", $name,
@@ -255,6 +260,7 @@ end
 
 
 function hvcat(rows::Tuple{Vararg{Int}}, A::Union{AbstractVecOrMat,UniformScaling}...)
+    @assert is_one_indexed(A...)
     nr = length(rows)
     sum(rows) == length(A) || throw(ArgumentError("mismatch between row sizes and number of arguments"))
     n = zeros(Int, length(A))
