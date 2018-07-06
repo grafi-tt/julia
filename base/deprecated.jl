@@ -1741,6 +1741,7 @@ end
 @deprecate mapfoldr(f, op, v0, itr) mapfoldr(f, op, itr; init=v0)
 
 @deprecate indices1 axes1
+@deprecate _length length
 
 # END 0.7 deprecations
 
