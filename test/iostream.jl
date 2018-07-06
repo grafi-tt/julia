@@ -70,4 +70,14 @@ end
     end
 end
 
+@testset "issue #27951" begin
+    a = UInt8[1 3; 2 4]
+    s = view(a, [1,2], :)
+    mktemp() do path, io
+        write(io, s)
+        b = readbytes!(io, Vector{UInt8}(undef, 4))
+        @test b == 0x01:0x04
+    end
+end
+
 @test Base.open_flags(read=false, write=true, append=false) == (read=false, write=true, create=true, truncate=true, append=false)
