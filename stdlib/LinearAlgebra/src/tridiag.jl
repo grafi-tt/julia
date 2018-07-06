@@ -6,11 +6,12 @@
 struct SymTridiagonal{T,V<:AbstractVector{T}} <: AbstractMatrix{T}
     dv::V                        # diagonal
     ev::V                        # subdiagonal
-    function SymTridiagonal{T}(dv::V, ev::V) where {T,V<:AbstractVector{T}}
+    function SymTridiagonal{T,V}(dv, ev) where {T,V<:AbstractVector{T}}
+        @assert is_one_indexed(dv, ev)
         if !(length(dv) - 1 <= length(ev) <= length(dv))
             throw(DimensionMismatch("subdiagonal has wrong length. Has length $(length(ev)), but should be either $(length(dv) - 1) or $(length(dv))."))
         end
-        new{T,V}(dv,ev)
+        new(dv,ev)
     end
 end
 
@@ -46,6 +47,7 @@ julia> SymTridiagonal(dv, ev)
 ```
 """
 SymTridiagonal(dv::V, ev::V) where {T,V<:AbstractVector{T}} = SymTridiagonal{T}(dv, ev)
+SymTridiagonal{T}(dv::V, ev::V) where {T,V<:AbstractVector{T}} = SymTridiagonal{T,V}(dv, ev)
 
 """
     SymTridiagonal(A::AbstractMatrix)

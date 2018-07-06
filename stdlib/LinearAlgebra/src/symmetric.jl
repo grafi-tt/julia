@@ -1,9 +1,14 @@
 # This file is a part of Julia. License is MIT: https://julialang.org/license
 
 # Symmetric and Hermitian matrices
-struct Symmetric{T,S<:AbstractMatrix{<:T}} <: AbstractMatrix{T}
+struct Symmetric{T,S<:AbstractMatrix{T}} <: AbstractMatrix{T}
     data::S
     uplo::Char
+
+    function Symmetric{T,S}(data, uplo) where {T,S<:AbstractMatrix{T}}
+        @assert is_one_indexed(data)
+        new(data, uplo)
+    end
 end
 """
     Symmetric(A, uplo=:U)
@@ -71,9 +76,14 @@ function symmetric_type(::Type{T}) where {S, T<:AbstractMatrix{S}}
 end
 symmetric_type(::Type{T}) where {T<:Number} = T
 
-struct Hermitian{T,S<:AbstractMatrix{<:T}} <: AbstractMatrix{T}
+struct Hermitian{T,S<:AbstractMatrix{T}} <: AbstractMatrix{T}
     data::S
     uplo::Char
+
+    function Hermitian{T,S}(data, uplo) where {T,S<:AbstractMatrix{T}}
+        @assert is_one_indexed(data)
+        new(data, uplo)
+    end
 end
 """
     Hermitian(A, uplo=:U)

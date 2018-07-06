@@ -34,10 +34,13 @@ The object has two fields:
 * `τ` is a vector  of length `min(m,n)` containing the coefficients ``\tau_i``.
 
 """
-struct QR{T,S<:AbstractMatrix} <: Factorization{T}
+struct QR{T,S<:AbstractMatrix{T}} <: Factorization{T}
     factors::S
     τ::Vector{T}
-    QR{T,S}(factors::AbstractMatrix{T}, τ::Vector{T}) where {T,S<:AbstractMatrix} = new(factors, τ)
+    function QR{T,S}(factors, τ) where {T,S<:AbstractMatrix{T}}
+        @assert is_one_indexed(factors)
+        new(factors, τ)
+    end
 end
 QR(factors::AbstractMatrix{T}, τ::Vector{T}) where {T} = QR{T,typeof(factors)}(factors, τ)
 
@@ -94,10 +97,13 @@ The object has two fields:
 
 [^Schreiber1989]: R Schreiber and C Van Loan, "A storage-efficient WY representation for products of Householder transformations", SIAM J Sci Stat Comput 10 (1989), 53-57. [doi:10.1137/0910005](https://doi.org/10.1137/0910005)
 """
-struct QRCompactWY{S,M<:AbstractMatrix} <: Factorization{S}
+struct QRCompactWY{S,M<:AbstractMatrix{S}} <: Factorization{S}
     factors::M
     T::Matrix{S}
-    QRCompactWY{S,M}(factors::AbstractMatrix{S}, T::AbstractMatrix{S}) where {S,M<:AbstractMatrix} = new(factors, T)
+    function QRCompactWY{S,M}(factors, T) where {S,M<:AbstractMatrix{S}}
+        @assert is_one_indexed(factors)
+        new(factors, T)
+    end
 end
 QRCompactWY(factors::AbstractMatrix{S}, T::AbstractMatrix{S}) where {S} = QRCompactWY{S,typeof(factors)}(factors, T)
 
@@ -139,12 +145,14 @@ The object has three fields:
 
 * `jpvt` is an integer vector of length `n` corresponding to the permutation ``P``.
 """
-struct QRPivoted{T,S<:AbstractMatrix} <: Factorization{T}
+struct QRPivoted{T,S<:AbstractMatrix{T}} <: Factorization{T}
     factors::S
     τ::Vector{T}
     jpvt::Vector{BlasInt}
-    QRPivoted{T,S}(factors::AbstractMatrix{T}, τ::Vector{T}, jpvt::Vector{BlasInt}) where {T,S<:AbstractMatrix} =
+    function QRPivoted{T,S}(factors, τ, jpvt) where {T,S<:AbstractMatrix{T}}
+        @assert is_one_indexed(factors)
         new(factors, τ, jpvt)
+    end
 end
 QRPivoted(factors::AbstractMatrix{T}, τ::Vector{T}, jpvt::Vector{BlasInt}) where {T} =
     QRPivoted{T,typeof(factors)}(factors, τ, jpvt)
@@ -435,10 +443,13 @@ abstract type AbstractQ{T} <: AbstractMatrix{T} end
 The orthogonal/unitary ``Q`` matrix of a QR factorization stored in [`QR`](@ref) or
 [`QRPivoted`](@ref) format.
 """
-struct QRPackedQ{T,S<:AbstractMatrix} <: AbstractQ{T}
+struct QRPackedQ{T,S<:AbstractMatrix{T}} <: AbstractQ{T}
     factors::S
     τ::Vector{T}
-    QRPackedQ{T,S}(factors::AbstractMatrix{T}, τ::Vector{T}) where {T,S<:AbstractMatrix} = new(factors, τ)
+    function QRPackedQ{T,S}(factors, τ) where {T,S<:AbstractMatrix{T}}
+        @assert is_one_indexed(factors)
+        new(factors, τ)
+    end
 end
 QRPackedQ(factors::AbstractMatrix{T}, τ::Vector{T}) where {T} = QRPackedQ{T,typeof(factors)}(factors, τ)
 
@@ -448,10 +459,13 @@ QRPackedQ(factors::AbstractMatrix{T}, τ::Vector{T}) where {T} = QRPackedQ{T,typ
 The orthogonal/unitary ``Q`` matrix of a QR factorization stored in [`QRCompactWY`](@ref)
 format.
 """
-struct QRCompactWYQ{S, M<:AbstractMatrix} <: AbstractQ{S}
+struct QRCompactWYQ{S, M<:AbstractMatrix{S}} <: AbstractQ{S}
     factors::M
     T::Matrix{S}
-    QRCompactWYQ{S,M}(factors::AbstractMatrix{S}, T::Matrix{S}) where {S,M<:AbstractMatrix} = new(factors, T)
+    function QRCompactWYQ{S,M}(factors, T) where {S,M<:AbstractMatrix{S}}
+        @assert is_one_indexed(factors)
+        new(factors, T)
+    end
 end
 QRCompactWYQ(factors::AbstractMatrix{S}, T::Matrix{S}) where {S} = QRCompactWYQ{S,typeof(factors)}(factors, T)
 

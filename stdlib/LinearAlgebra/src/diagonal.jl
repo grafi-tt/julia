@@ -4,7 +4,14 @@
 
 struct Diagonal{T,V<:AbstractVector{T}} <: AbstractMatrix{T}
     diag::V
+
+    function Diagonal{T,V}(diag) where {V<:AbstractVector{T}}
+        @assert is_one_indexed(diag)
+        new(diag)
+    end
 end
+Diagonal(v::AbstractVector{T}) where T = Diagonal{T,typeof(v)}(v)
+
 """
     Diagonal(A::AbstractMatrix)
 

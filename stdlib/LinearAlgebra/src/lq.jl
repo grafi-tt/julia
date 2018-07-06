@@ -2,10 +2,13 @@
 
 # LQ Factorizations
 
-struct LQ{T,S<:AbstractMatrix} <: Factorization{T}
+struct LQ{T,S<:AbstractMatrix{T}} <: Factorization{T}
     factors::S
     τ::Vector{T}
-    LQ{T,S}(factors::AbstractMatrix{T}, τ::Vector{T}) where {T,S<:AbstractMatrix} = new(factors, τ)
+    function LQ{T,S}(factors, τ) where {T,S<:AbstractMatrix{T}}
+        @assert is_one_indexed(factors)
+        new(factors, τ)
+    end
 end
 LQ(factors::AbstractMatrix{T}, τ::Vector{T}) where {T} = LQ{T,typeof(factors)}(factors, τ)
 

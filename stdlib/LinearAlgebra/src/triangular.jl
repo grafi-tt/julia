@@ -9,13 +9,18 @@ abstract type AbstractTriangular{T,S<:AbstractMatrix} <: AbstractMatrix{T} end
 for t in (:LowerTriangular, :UnitLowerTriangular, :UpperTriangular,
           :UnitUpperTriangular)
     @eval begin
-        struct $t{T,S<:AbstractMatrix} <: AbstractTriangular{T,S}
+        struct $t{T,S<:AbstractMatrix{T}} <: AbstractTriangular{T,S}
             data::S
+
+            function $t{T,S}(data) where {T,S<:AbstractMatrix{T}}
+                @assert is_one_indexed(data)
+                checksquare(data)
+                new(data)
+            end
         end
         $t(A::$t) = A
         $t{T}(A::$t{T}) where {T} = A
         function $t(A::AbstractMatrix)
-            checksquare(A)
             return $t{eltype(A), typeof(A)}(A)
         end
 

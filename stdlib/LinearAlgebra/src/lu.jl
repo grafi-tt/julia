@@ -3,11 +3,14 @@
 ####################
 # LU Factorization #
 ####################
-struct LU{T,S<:AbstractMatrix} <: Factorization{T}
+struct LU{T,S<:AbstractMatrix{T}} <: Factorization{T}
     factors::S
     ipiv::Vector{BlasInt}
     info::BlasInt
-    LU{T,S}(factors::AbstractMatrix{T}, ipiv::Vector{BlasInt}, info::BlasInt) where {T,S} = new(factors, ipiv, info)
+    function LU{T,S}(factors, ipiv, info) where {T,S<:AbstractMatrix{T}}
+        @assert is_one_indexed(factors)
+        new(factors, ipiv, info)
+    end
 end
 LU(factors::AbstractMatrix{T}, ipiv::Vector{BlasInt}, info::BlasInt) where {T} = LU{T,typeof(factors)}(factors, ipiv, info)
 

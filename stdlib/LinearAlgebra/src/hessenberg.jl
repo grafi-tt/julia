@@ -63,7 +63,10 @@ hessenberg(A::StridedMatrix{T}) where T =
 struct HessenbergQ{T,S<:AbstractMatrix} <: AbstractMatrix{T}
     factors::S
     τ::Vector{T}
-    HessenbergQ{T,S}(factors::AbstractMatrix{T}, τ::Vector{T}) where {T,S<:AbstractMatrix} = new(factors, τ)
+    function HessenbergQ{T,S}(factors, τ) where {T,S<:AbstractMatrix}
+        @assert is_one_indexed(factors)
+        new(factors, τ)
+    end
 end
 HessenbergQ(factors::AbstractMatrix{T}, τ::Vector{T}) where {T} = HessenbergQ{T,typeof(factors)}(factors, τ)
 HessenbergQ(A::Hessenberg) = HessenbergQ(A.factors, A.τ)

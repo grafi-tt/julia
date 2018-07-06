@@ -1,8 +1,14 @@
 # This file is a part of Julia. License is MIT: https://julialang.org/license
 
-struct LDLt{T,S<:AbstractMatrix} <: Factorization{T}
+struct LDLt{T,S<:AbstractMatrix{T}} <: Factorization{T}
     data::S
+
+    function LDLt{T,S}(data) where {T,S<:AbstractMatrix}
+        @assert is_one_indexed(data)
+        new(data)
+    end
 end
+LDLt(data::AbstractMatrix{T}) where T = LDLt{T,typeof(data)}(data)
 
 size(S::LDLt) = size(S.data)
 size(S::LDLt, i::Integer) = size(S.data, i)
